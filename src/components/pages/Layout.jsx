@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import { Database, Trello, Settings } from "lucide-react";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import HomePage from "./Sidebar";
+import MyEmployees from "./MyEmployee";
 
 const Layout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
 
   const handleToggleSidebar = () => {
     setCollapsed((prev) => !prev);
+  };
+
+  const isActive = (path) => {
+    return location.pathname === path;
   };
 
   return (
@@ -24,14 +31,28 @@ const Layout = () => {
 
         <nav className="flex-1 px-2 py-6 overflow-y-auto">
           <div className="space-y-2">
-            <button className="flex items-center gap-3 w-full px-3 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+            <Link
+              to="/"
+              className={`flex items-center gap-3 w-full px-3 py-2 text-left text-sm font-medium rounded-md transition-colors ${
+                isActive("/")
+                  ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
               <Database className="w-4 h-4" />
               {!collapsed && "My Data"}
-            </button>
-            <button className="flex items-center gap-3 w-full px-3 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+            </Link>
+            <Link
+              to="/employees"
+              className={`flex items-center gap-3 w-full px-3 py-2 text-left text-sm font-medium rounded-md transition-colors ${
+                isActive("/employees")
+                  ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
               <Trello className="w-4 h-4" />
               {!collapsed && "My Employees"}
-            </button>
+            </Link>
           </div>
         </nav>
 
@@ -62,11 +83,19 @@ const Layout = () => {
           collapsed ? "ml-20" : "ml-64"
         }`}
       >
-        <HomePage onToggleSidebar={handleToggleSidebar} />
+        <Routes>
+          <Route
+            path="/"
+            element={<HomePage onToggleSidebar={handleToggleSidebar} />}
+          />
+          <Route
+            path="/employees"
+            element={<MyEmployees onToggleSidebar={handleToggleSidebar} />}
+          />
+        </Routes>
       </main>
     </div>
   );
 };
 
 export default Layout;
-
